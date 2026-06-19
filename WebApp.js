@@ -21,7 +21,13 @@ function getWebAppData() {
     const employees        = cachedEmployees();
     const risks            = cachedSheetData('Risk Report');
     const productivity     = cachedSheetData('Productivity');
+    const rmData = getRMData();
     const offboarded       = cachedSheetData('Offboarded Resources');
+    // Create lookup map
+    const rmMap = {};                   // <-- ADD THIS
+    rmData.forEach(r => {
+      rmMap[r["Employee ID"]] = r;
+    });
     const lwdAlerts        = getLWDAlerts();
     const probationAlerts  = getProbationAlerts();
 
@@ -38,6 +44,21 @@ function getWebAppData() {
       lwdAlerts:    lwdAlerts.length,
       probAlerts:   probationAlerts.length
     };
+    const employeeFinance = employees.map(e => {
+
+  const empId = getField(e, 'Employee ID') || '';
+  const rm = rmMap[empId] || {};
+
+  return {
+    employeeId: empId,
+    employeeName: getField(e, 'Employee Name') || '',
+    department: getField(e, 'Department') || '',
+    region: getField(e, 'Region') || '',
+    project: rm["Dec-2025 Project"] || 'Unassigned',
+    ctc: Number(rm["Annual CTC"] || 0)
+  };
+
+});
 
     // Department breakdown
     const deptMap = {};
@@ -65,16 +86,26 @@ function getWebAppData() {
     const orgData = buildOrgData(employees);
 
     // Drill-down — all employees serialized
-    const employeeList = employees.map(e => ({
-      id:         getField(e, 'Employee ID') || '',
-      name:       getField(e, 'Employee Name') || '',
-      dept:       getField(e, 'Department') || '',
-      region:     getField(e, 'Region') || '',
-      manager:    getField(e, 'Reporting Manager') || '',
-      status:     getField(e, 'Employment Status') || '',
-      designation: getField(e, 'Designation') || '',
-      doj:        formatDate(getField(e, 'Date of Joining'))
-    }));
+    // Drill-down — all employees serialized
+// Drill-down — all employees serialized
+const employeeList = employees.map(e => {
+  const empId = getField(e, 'Employee ID') || '';
+  const rm = rmMap[empId] || {};
+
+  return {
+    id: empId,
+    name: getField(e, 'Employee Name') || '',
+    dept: getField(e, 'Department') || '',
+    region: getField(e, 'Region') || '',
+    manager: getField(e, 'Reporting Manager') || '',
+    status: getField(e, 'Employment Status') || '',
+    designation: getField(e, 'Designation') || '',
+    doj: formatDate(getField(e, 'Date of Joining')),
+
+    currentProject: rm["Dec-2025 Project"] || '',
+    allocation: rm["Dec-2025 Allocation (%)"] || ''
+  };
+});
 
     // Unique filter values for drill-down
     const filters = {
@@ -83,11 +114,31 @@ function getWebAppData() {
       managers:   [...new Set(employeeList.map(e => e.manager).filter(Boolean))].sort(),
       statuses:   [...new Set(employeeList.map(e => e.status).filter(Boolean))].sort()
     };
+const alertEngine = getAlertEngineRecommendations();
+const productivityData = getProductivityData();
+const financeData =getFinanceData();
+const topPerformers =
+  getTopPerformers(5);
+const projectFinance =
+  getProjectFinanceSummary();
 
+const departmentFinance =
+  getDepartmentFinanceSummary();
+const lowestPerformers =
+  getLowestPerformers(5);
     return {
-      success:       true,
-      generatedAt:   new Date().toLocaleString(),
-      kpis,
+  success: true,
+  generatedAt: new Date().toLocaleString(),
+projectFinance,
+departmentFinance,
+  kpis,
+  alertEngine,
+employeeFinance,
+  productivityData,
+
+  financeData,
+  topPerformers,
+  lowestPerformers,
       lwdAlerts:     lwdAlerts.map(a => ({
         id:       a.employeeId,
         name:     a.name,
@@ -188,4 +239,31 @@ function formatDate(val) {
   const d = new Date(val);
   if (isNaN(d.getTime())) return val.toString();
   return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+function testProductivity() {
+
+  const data = getWebAppData();
+
+  Logger.log(data.topPerformers);
+  Logger.log(data.lowestPerformers);
+  Logger.log(data.productivityData.length);
+
+}
+function testWebAppProductivity() {
+
+  const data = getWebAppData();
+
+  Logger.log(
+    JSON.stringify(
+      data.topPerformers[0],
+      null,
+      2
+    )
+  );
+
+}
+function testWebData() {
+  const data = getWebAppData();
+
+  Logger.log(JSON.stringify(data, null, 2));
 }

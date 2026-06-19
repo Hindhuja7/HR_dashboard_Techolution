@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HR Automation Dashboard</title>
 <style>
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
@@ -41,6 +42,18 @@
   }
   .refresh-btn:hover { background: rgba(255,255,255,0.25); }
   .refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .add-emp-btn {
+    background: #4f46e5;
+    border: none;
+    color: white;
+    padding: 8px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    margin-right: 10px;
+  }
+  .add-emp-btn:hover { background: #4338ca; }
 
   /* ── LAYOUT ── */
   .main { padding: 24px 32px; max-width: 1400px; margin: 0 auto; }
@@ -101,6 +114,7 @@
     box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     border-top: 3px solid #4f46e5;
     transition: transform 0.15s, box-shadow 0.15s;
+    cursor: pointer;
   }
   .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
   .kpi-card.alert   { border-top-color: #f59e0b; }
@@ -166,6 +180,38 @@
   .badge-gray   { background: #f3f4f6; color: #374151; }
   .badge-purple { background: #ede9fe; color: #5b21b6; }
 
+.nav-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.nav-tabs button {
+  border: 1px solid #d1d5db;
+  background: white;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.nav-tabs button:hover {
+  background: #f9fafb;
+}
+.nav-tabs button.active {
+  background: #4f46e5;
+  color: white;
+  border-color: #4f46e5;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
   /* ── ALERTS ── */
   .alert-item {
     display: flex;
@@ -207,6 +253,75 @@
     border-radius: 4px;
     transition: width 0.6s ease;
   }
+  .priority-high {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-left: 4px solid #ef4444;
+}
+
+.priority-medium {
+  background: #fef3c7;
+  color: #92400e;
+  border-left: 4px solid #f59e0b;
+}
+
+.priority-low {
+  background: #dcfce7;
+  color: #166534;
+  border-left: 4px solid #22c55e;
+}
+  /* ── ALERT ENGINE ── */
+.alert-engine-card {
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border-left: 5px solid;
+}
+
+.alert-engine-card.high {
+  background: #fef2f2;
+  border-color: #dc2626;
+}
+
+.alert-engine-card.medium {
+  background: #fff7ed;
+  border-color: #ea580c;
+}
+
+.alert-engine-card.low {
+  background: #f0fdf4;
+  border-color: #16a34a;
+}
+
+.alert-engine-priority {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.alert-engine-priority.high {
+  color: #dc2626;
+}
+
+.alert-engine-priority.medium {
+  color: #ea580c;
+}
+
+.alert-engine-priority.low {
+  color: #16a34a;
+}
+
+.alert-engine-category {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.alert-engine-message {
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.4;
+}
 
   /* ── ATTRITION ── */
   .attrition-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
@@ -233,51 +348,14 @@
   min-width: max-content;
 }
 
-/* Each root block */
 .org-root-block { display: flex; flex-direction: column; align-items: center; }
-
-/* Manager box at top */
 .org-manager-row { display: flex; justify-content: center; margin-bottom: 0; }
+.org-v-line-down { width: 2px; height: 24px; background: #c4b5fd; margin: 0 auto; }
+.org-h-line { height: 2px; background: #c4b5fd; margin: 0 auto; }
+.org-children-row { display: flex; flex-direction: row; justify-content: center; gap: 12px; position: relative; }
+.org-child-col { display: flex; flex-direction: column; align-items: center; }
+.org-child-v-line { width: 2px; height: 20px; background: #c4b5fd; margin: 0 auto; }
 
-/* Vertical line from manager down */
-.org-v-line-down {
-  width: 2px;
-  height: 24px;
-  background: #c4b5fd;
-  margin: 0 auto;
-}
-
-/* Horizontal line spanning all children */
-.org-h-line {
-  height: 2px;
-  background: #c4b5fd;
-  margin: 0 auto;
-}
-
-/* Children row */
-.org-children-row {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 12px;
-  position: relative;
-}
-
-/* Vertical line from h-line down to each child */
-.org-child-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.org-child-v-line {
-  width: 2px;
-  height: 20px;
-  background: #c4b5fd;
-  margin: 0 auto;
-}
-
-/* Boxes */
 .org-box {
   border-radius: 8px;
   padding: 8px 14px;
@@ -293,29 +371,13 @@
 }
 .org-box:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 
-.org-box-root {
-  background: linear-gradient(135deg, #4f46e5, #7c3aed);
-  color: white;
-  font-size: 13px;
-  font-weight: 700;
-}
-.org-box-mid {
-  background: #ede9fe;
-  color: #3730a3;
-  font-size: 12px;
-  font-weight: 600;
-  border: 2px solid #c4b5fd;
-}
-.org-box-leaf {
-  background: #f9fafb;
-  color: #374151;
-  font-size: 11px;
-  font-weight: 500;
-  border: 1px solid #e5e7eb;
-}
+.org-box-root { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; font-size: 13px; font-weight: 700; }
+.org-box-mid { background: #ede9fe; color: #3730a3; font-size: 12px; font-weight: 600; border: 2px solid #c4b5fd; }
+.org-box-leaf { background: #f9fafb; color: #374151; font-size: 11px; font-weight: 500; border: 1px solid #e5e7eb; }
 .org-box-name  { line-height: 1.3; }
 .org-box-count { font-size: 10px; opacity: 0.7; margin-top: 2px; }
 .no-data { text-align: center; color: #9ca3af; padding: 32px; font-size: 13px; }
+
   /* ── DRILL-DOWN ── */
   .filter-row {
     display: grid;
@@ -343,7 +405,88 @@
   }
   .filter-group select:focus { outline: none; border-color: #4f46e5; }
   .dd-count { font-size: 12px; color: #6b7280; margin-bottom: 8px; }
-  .no-data { text-align: center; color: #9ca3af; padding: 32px; font-size: 13px; }
+
+  /* ── ROW ACTIONS ── */
+  .row-actions { display: flex; gap: 6px; }
+  .row-action-btn {
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 11px;
+    cursor: pointer;
+    color: #374151;
+  }
+  .row-action-btn:hover { background: #e5e7eb; }
+  .row-action-btn.danger { color: #ef4444; border-color: #fea; }
+  .row-action-btn.danger:hover { background: #fef2f2; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    width: 480px;
+    max-width: 92vw;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+  }
+  .modal-title { font-size: 16px; font-weight: 700; color: #1a1a2e; margin-bottom: 16px; }
+  .modal-field { margin-bottom: 14px; }
+  .modal-field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .modal-field input, .modal-field select {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #1a1a2e;
+  }
+  .modal-field input:focus, .modal-field select:focus { outline: none; border-color: #4f46e5; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+  .modal-btn { padding: 9px 18px; border-radius: 6px; font-size: 13px; cursor: pointer; border: none; }
+  .modal-btn-cancel { background: #f3f4f6; color: #374151; }
+  .modal-btn-save { background: #4f46e5; color: white; }
+  .modal-btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
+  .modal-btn-danger { background: #ef4444; color: white; }
+  .modal-error {
+    background: #fff1f0; border: 1px solid #ffccc7; color: #cf1322;
+    border-radius: 6px; padding: 10px 12px; font-size: 12px; margin-bottom: 12px; display: none;
+  }
+  .modal-success {
+    background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534;
+    border-radius: 6px; padding: 10px 12px; font-size: 12px; margin-bottom: 12px; display: none;
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: #1a1a2e; color: white; padding: 12px 20px;
+    border-radius: 8px; font-size: 13px; box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    z-index: 300; opacity: 0; transform: translateY(10px);
+    transition: opacity 0.25s, transform 0.25s; max-width: 360px;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.toast-error { background: #cf1322; }
+  .toast.toast-success { background: #166534; }
 </style>
 </head>
 <body>
@@ -351,12 +494,152 @@
 <!-- HEADER -->
 <div class="header">
   <div>
-    <h1>⚡ HR Automation Dashboard</h1>
+    <h1>HR Automation Dashboard</h1>
     <div class="meta" id="generatedAt">Loading data...</div>
   </div>
-  <button class="refresh-btn" id="refreshBtn" onclick="loadData()">↻ Refresh</button>
+  <div>
+    <button class="add-emp-btn" onclick="openAddEmployeeModal()">+ Add Employee</button>
+    <button class="refresh-btn" id="refreshBtn" onclick="loadData()">Refresh</button>
+  </div>
 </div>
 
+<!-- ADD EMPLOYEE MODAL -->
+<div class="modal-overlay" id="addEmpModal">
+  <div class="modal-box">
+    <div class="modal-title">Add Employee</div>
+    <div class="modal-error" id="addEmpError"></div>
+    <div class="modal-success" id="addEmpSuccess"></div>
+
+    <div class="modal-field">
+      <label>Employee ID (must start with IN or US)</label>
+      <input type="text" id="f_employeeId" placeholder="e.g. IN1070 or US2030">
+    </div>
+    <div class="modal-field">
+      <label>Employee Name</label>
+      <input type="text" id="f_employeeName">
+    </div>
+    <div class="modal-field">
+      <label>Department</label>
+      <input type="text" id="f_department">
+    </div>
+    <div class="modal-field">
+      <label>Designation</label>
+      <input type="text" id="f_designation">
+    </div>
+    <div class="modal-field">
+      <label>Reporting Manager</label>
+      <input type="text" id="f_reportingManager">
+    </div>
+    <div class="modal-field">
+      <label>Skillset</label>
+      <input type="text" id="f_skillset" placeholder="comma-separated">
+    </div>
+    <div class="modal-field">
+      <label>Date of Joining</label>
+      <input type="date" id="f_doj">
+    </div>
+    <div class="modal-field">
+      <label>Employment Status</label>
+      <select id="f_employmentStatus" onchange="toggleLwdField()">
+        <option value="Confirmed">Confirmed</option>
+        <option value="Under Probation">Under Probation</option>
+        <option value="Intern">Intern</option>
+      </select>
+    </div>
+    <div class="modal-field" id="f_lwdGroup" style="display:none">
+      <label>Last Working Day (required for interns)</label>
+      <input type="date" id="f_lwd">
+    </div>
+
+    <div class="modal-actions">
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal('addEmpModal')">Cancel</button>
+      <button class="modal-btn modal-btn-save" id="addEmpSaveBtn" onclick="submitAddEmployee()">Add Employee</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT FIELD MODAL -->
+<div class="modal-overlay" id="editFieldModal">
+  <div class="modal-box">
+    <div class="modal-title" id="editFieldTitle">Edit Employee</div>
+    <div class="modal-error" id="editFieldError"></div>
+    <div class="modal-success" id="editFieldSuccess"></div>
+
+    <div class="modal-field">
+      <label id="editFieldLabel">Field</label>
+      <input type="text" id="f_editValue">
+    </div>
+
+    <div class="modal-actions">
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal('editFieldModal')">Cancel</button>
+      <button class="modal-btn modal-btn-save" id="editFieldSaveBtn" onclick="submitEditField()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- REMOVE EMPLOYEE MODAL -->
+<div class="modal-overlay" id="removeEmpModal">
+  <div class="modal-box">
+    <div class="modal-title">Offboard Employee</div>
+    <div class="modal-error" id="removeEmpError"></div>
+    <div class="modal-success" id="removeEmpSuccess"></div>
+    <p style="font-size:13px;color:#374151;margin-bottom:14px">
+      This will move <strong id="removeEmpName"></strong> to Offboarded Resources. This is not a hard delete — their record is preserved for attrition reporting.
+    </p>
+    <div class="modal-field">
+      <label>Exit Reason</label>
+      <select id="f_exitReason">
+        <option>Resignation</option>
+        <option>Performance</option>
+        <option>End of Contract</option>
+        <option>Internship Completed</option>
+        <option>Better Opportunity</option>
+        <option>Relocation</option>
+        <option>Higher Studies</option>
+        <option>Personal Reasons</option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <label>Last Working Day</label>
+      <input type="date" id="f_exitLwd">
+    </div>
+    <div class="modal-field">
+      <label>Notice Period Served</label>
+      <select id="f_noticePeriod"><option>Yes</option><option>No</option></select>
+    </div>
+    <div class="modal-field">
+      <label>Rehire Eligible</label>
+      <select id="f_rehireEligible"><option>Yes</option><option>No</option></select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal('removeEmpModal')">Cancel</button>
+      <button class="modal-btn modal-btn-danger" id="removeEmpSaveBtn" onclick="submitRemoveEmployee()">Offboard</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+<div class="nav-tabs">
+
+  <button class="active" onclick="showTab('dashboard')">
+  Dashboard
+</button>
+
+  <button onclick="showTab('alerts')">
+    Alert Engine
+  </button>
+
+  <button onclick="showTab('finance')">
+    Finance
+  </button>
+
+  <button onclick="showTab('productivity')">
+    Productivity
+  </button>
+
+</div>
 <!-- MAIN -->
 <div class="main">
 
@@ -367,7 +650,10 @@
 
   <div id="errorState" class="error-box" style="display:none"></div>
 
-  <div id="dashboard" style="display:none">
+    <div id="dashboardTab"
+       class="tab-content active">
+       <!-- Alert Engine Tab -->
+  
 
     <!-- KPIs -->
     <div class="section">
@@ -380,34 +666,42 @@
       <div class="section-title">Active Alerts</div>
       <div class="two-col">
         <div class="card">
-          <div class="card-title">🔴 Intern LWD Alerts</div>
+          <div class="card-title">Intern LWD Alerts</div>
           <div id="lwdAlerts"></div>
         </div>
         <div class="card">
-          <div class="card-title">🟡 Probation Alerts</div>
+          <div class="card-title">Probation Alerts</div>
           <div id="probationAlerts"></div>
         </div>
       </div>
     </div>
+  
+   <!-- ALERT ENGINE -->
+<div class="section">
+  <div class="card">
+    <div class="card-title">Alert Engine Recommendations</div>
+    <div id="alertEngineContainer"></div>
+  </div>
+</div>
 
-    <!-- DEPT + ATTRITION -->
-    <div class="section">
-      <div class="two-col">
-        <div class="card">
-          <div class="card-title">🏢 Department Breakdown</div>
-          <div id="deptBreakdown"></div>
-        </div>
-        <div class="card">
-          <div class="card-title">📉 Quarterly Attrition</div>
-          <div id="attrition"></div>
-        </div>
-      </div>
+<!-- DEPARTMENT + ATTRITION -->
+<div class="section">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Department Breakdown</div>
+      <div id="deptBreakdown"></div>
     </div>
 
+    <div class="card">
+      <div class="card-title">Quarterly Attrition</div>
+      <div id="attrition"></div>
+    </div>
+  </div>
+</div>
     <!-- RISK REGISTER -->
     <div class="section">
       <div class="card">
-        <div class="card-title">⚠️ Risk Register</div>
+        <div class="card-title">Risk Register</div>
         <div style="overflow-x:auto">
           <table class="data-table">
             <thead>
@@ -428,7 +722,7 @@
     <!-- ORG CHART -->
     <div class="section">
       <div class="card">
-        <div class="card-title">🗂️ Organisation Chart</div>
+        <div class="card-title">Organisation Chart</div>
         <div class="org-container" id="orgChart"></div>
       </div>
     </div>
@@ -436,23 +730,26 @@
     <!-- DRILL-DOWN -->
     <div class="section">
       <div class="card">
-        <div class="card-title">🔍 Employee Drill-Down</div>
+        <div class="card-title">Employee Drill-Down</div>
         <div class="filter-row" id="filterRow"></div>
         <div class="dd-count" id="ddCount"></div>
         <div style="overflow-x:auto">
           <table class="data-table">
             <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Department</th>
-                <th>Region</th>
-                <th>Manager</th>
-                <th>Status</th>
-                <th>Designation</th>
-                <th>DOJ</th>
-              </tr>
-            </thead>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Department</th>
+    <th>Region</th>
+    <th>Manager</th>
+    <th>Status</th>
+    <th>Designation</th>
+    <th>Project</th>
+    <th>Allocation %</th>
+    <th>DOJ</th>
+    <th>Actions</th>
+  </tr>
+</thead>
             <tbody id="ddBody"></tbody>
           </table>
         </div>
@@ -460,21 +757,735 @@
     </div>
 
   </div><!-- /dashboard -->
+  
+<div id="alertsTab" class="tab-content">
+
+  <div class="section">
+    <div class="card">
+      <div class="card-title">
+        Alert Engine Recommendations
+      </div>
+
+      <div id="alertEngineFull"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FINANCE TAB -->
+<div id="financeTab" class="tab-content">
+
+  <div class="section">
+    <div class="kpi-grid" id="financeKPIs"></div>
+  </div>
+
+  <div class="section">
+    <div class="two-col">
+
+      <div class="card">
+        <div class="card-title">
+          Project Cost Breakdown
+        </div>
+
+        <div id="projectFinance"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          Department Finance Summary
+        </div>
+
+        <div id="departmentFinance"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card">
+
+  <div class="card-title">
+    Employee Finance Drill Down
+  </div>
+
+  <div class="filter-row">
+
+    <div class="filter-group">
+      <label>Project</label>
+      <select id="financeProjectFilter"
+        onchange="renderFinanceDrilldownFiltered()">
+        <option value="All">All Projects</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Department</label>
+      <select id="financeDeptFilter"
+        onchange="renderFinanceDrilldownFiltered()">
+        <option value="All">All Departments</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Region</label>
+      <select id="financeRegionFilter"
+        onchange="renderFinanceDrilldownFiltered()">
+        <option value="All">All Regions</option>
+      </select>
+    </div>
+
+  </div>
+
+  <div id="financeDrilldown"></div>
+
+</div>
+  </div>
+
+</div>
+
+<!-- PRODUCTIVITY TAB -->
+<div id="productivityTab" class="tab-content">
+
+  <div class="section">
+    <div class="two-col">
+
+      <div class="card">
+        <div class="card-title">Top Performers</div>
+        <div id="topPerformers"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Lowest Performers</div>
+        <div id="lowestPerformers"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="card">
+
+      <div class="card-title">
+        Productivity Analysis
+      </div>
+
+    <!-- ADD HERE -->
+    <div class="filter-row">
+
+      <div class="filter-group">
+        <label>Department</label>
+        <select id="prodDeptFilter"
+          onchange="renderProductivityFiltered()">
+          <option value="All">All</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Region</label>
+        <select id="prodRegionFilter"
+          onchange="renderProductivityFiltered()">
+          <option value="All">All</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Project</label>
+        <select id="prodProjectFilter"
+          onchange="renderProductivityFiltered()">
+          <option value="All">All</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div style="overflow-x:auto">
+      <table class="data-table">
+      <div style="overflow-x:auto">
+        <table class="data-table">
+
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Department</th>
+              <th>Avg Hours</th>
+              <th>Trend</th>
+              <th>Flag</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody id="productivityBody"></tbody>
+
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
 </div><!-- /main -->
+
 
 <script>
 let _data = null;
 let _filters = { region: 'All', dept: 'All', manager: 'All', status: 'All' };
+function sendProductivityMail(employeeId){
 
-document.addEventListener('DOMContentLoaded', () => {
-  loadData();
-  startAutoRefresh();
-});
+  google.script.run
+    .withSuccessHandler(msg=>{
+      alert(msg);
+    })
+    .sendProductivityEmail(employeeId);
 
+}
+function loadProductivityFilters(){
+
+  const rows =
+    _data.productivityData || [];
+
+  fillDropdown(
+    "prodDeptFilter",
+    [...new Set(
+      rows.map(r => r.department)
+        .filter(Boolean)
+    )]
+  );
+
+  fillDropdown(
+    "prodRegionFilter",
+    [...new Set(
+      rows.map(r => r.region)
+        .filter(Boolean)
+    )]
+  );
+
+  fillDropdown(
+    "prodProjectFilter",
+    [...new Set(
+      rows.map(r => r.project)
+        .filter(Boolean)
+    )]
+  );
+
+}
+function renderProductivityFiltered(){
+
+  let rows =
+    _data.productivityData || [];
+
+  const dept =
+    document.getElementById(
+      "prodDeptFilter"
+    ).value;
+
+  const region =
+    document.getElementById(
+      "prodRegionFilter"
+    ).value;
+
+  const project =
+    document.getElementById(
+      "prodProjectFilter"
+    ).value;
+
+  if(dept !== "All"){
+    rows = rows.filter(
+      r => r.department === dept
+    );
+  }
+
+  if(region !== "All"){
+    rows = rows.filter(
+      r => r.region === region
+    );
+  }
+
+  if(project !== "All"){
+    rows = rows.filter(
+      r => r.project === project
+    );
+  }
+
+  renderProductivityTable(rows);
+
+}
+function renderProductivityTable(rows){
+
+  document.getElementById(
+    "productivityBody"
+  ).innerHTML = rows.map(e => `
+
+    <tr>
+
+      <td>${e.employeeId}</td>
+
+      <td>${e.employeeName}</td>
+
+      <td>${e.department}</td>
+
+      <td>${e.overallAvg.toFixed(2)}</td>
+
+      <td>
+        <span class="badge ${getTrendClass(e.trend)}">
+          ${e.trend}
+        </span>
+      </td>
+
+      <td>
+        ${e.flag || "-"}
+      </td>
+
+      <td>
+        <button
+          class="row-action-btn"
+          onclick="sendProductivityMail('${e.employeeId}')">
+          Email Manager
+        </button>
+      </td>
+
+    </tr>
+
+  `).join("");
+
+}
+function renderFinanceDetails(
+  projects=[],
+  departments=[]
+){
+
+  document.getElementById(
+    "projectFinance"
+  ).innerHTML = projects.map(p=>`
+
+    <div class="alert-item">
+
+      <div style="flex:1">
+
+       <div class="alert-name"
+     style="cursor:pointer;color:#4f46e5"
+     onclick="showProjectEmployees('${p.project}')">
+  ${p.project}
+</div>
+        <div class="alert-meta">
+
+          ${p.headcount} Employees
+
+        </div>
+
+      </div>
+
+      <div>
+
+        ₹${p.totalCTC.toLocaleString()}
+
+      </div>
+
+    </div>
+
+  `).join("");
+
+  document.getElementById(
+    "departmentFinance"
+  ).innerHTML = departments.map(d=>`
+
+    <div class="alert-item">
+
+      <div style="flex:1">
+
+      <div class="alert-name"
+     style="cursor:pointer;color:#4f46e5"
+     onclick="showDeptEmployees('${d.department}')">
+  ${d.department}
+</div>
+
+        <div class="alert-meta">
+
+          ${d.headcount} Employees
+
+        </div>
+
+      </div>
+
+      <div>
+
+        ₹${d.totalCTC.toLocaleString()}
+
+      </div>
+
+    </div>
+
+  `).join("");
+}
+function showProjectEmployees(project){
+
+  const data =
+    _data.projectFinance.find(
+      p => p.project === project
+    );
+
+  if(!data) return;
+
+  renderFinanceDrilldown(
+    data.employees,
+    "Project: " + project
+  );
+}
+function fillDropdown(id, values){
+
+  const select =
+    document.getElementById(id);
+
+  select.innerHTML =
+    '<option value="All">All</option>';
+
+  values.forEach(v => {
+
+    const opt =
+      document.createElement("option");
+
+    opt.value = v;
+    opt.textContent = v;
+
+    select.appendChild(opt);
+
+  });
+
+}
+function loadFinanceFilters(){
+
+  const rows =
+    _data.employeeFinance || [];
+
+  fillDropdown(
+    "financeProjectFilter",
+    [...new Set(rows.map(r => r.project))]
+  );
+
+  fillDropdown(
+    "financeDeptFilter",
+    [...new Set(rows.map(r => r.department))]
+  );
+
+  fillDropdown(
+    "financeRegionFilter",
+    [...new Set(rows.map(r => r.region))]
+  );
+
+}
+function renderFinanceDrilldownFiltered(){
+
+  let rows =
+    _data.employeeFinance || [];
+
+  const project =
+    document.getElementById(
+      "financeProjectFilter"
+    ).value;
+
+  const dept =
+    document.getElementById(
+      "financeDeptFilter"
+    ).value;
+
+  const region =
+    document.getElementById(
+      "financeRegionFilter"
+    ).value;
+
+  if(project !== "All")
+    rows =
+      rows.filter(r =>
+        r.project === project
+      );
+
+  if(dept !== "All")
+    rows =
+      rows.filter(r =>
+        r.department === dept
+      );
+
+  if(region !== "All")
+    rows =
+      rows.filter(r =>
+        r.region === region
+      );
+
+  document.getElementById(
+    "financeDrilldown"
+  ).innerHTML =
+    buildFinanceTable(rows);
+
+}
+function buildFinanceTable(rows){
+
+  return `
+
+    <table class="data-table">
+
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Project</th>
+          <th>Department</th>
+          <th>Region</th>
+          <th>CTC</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+      ${rows.map(r => `
+
+        <tr>
+          <td>${r.employeeId}</td>
+          <td>${r.employeeName}</td>
+          <td>${r.project}</td>
+          <td>${r.department}</td>
+          <td>${r.region}</td>
+          <td>₹${r.ctc.toLocaleString()}</td>
+        </tr>
+
+      `).join("")}
+
+      </tbody>
+
+    </table>
+
+  `;
+}
+function renderFinanceDrilldown(
+  employees,
+  title
+){
+
+  document.getElementById(
+    "financeDrilldown"
+  ).innerHTML = `
+
+    <h3 style="margin-bottom:10px">
+      ${title}
+    </h3>
+
+    <table class="data-table">
+
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Department</th>
+          <th>CTC</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+      ${employees.map(e=>`
+
+        <tr>
+
+          <td>${e.employeeId}</td>
+
+          <td>${e.employeeName}</td>
+
+          <td>${e.department || '-'}</td>
+
+          <td>
+            ₹${e.ctc.toLocaleString()}
+          </td>
+
+        </tr>
+
+      `).join("")}
+
+      </tbody>
+
+    </table>
+
+  `;
+}
+
+function showDeptEmployees(dept){
+
+  const data =
+    _data.departmentFinance.find(
+      d => d.department === dept
+    );
+
+  if(!data) return;
+
+  renderFinanceDrilldown(
+    data.employees,
+    "Department: " + dept
+  );
+}
+function renderFinance(finance = {}) {
+
+  finance.totalPayrollINR =
+    finance.totalPayrollINR || 0;
+
+  finance.indiaPayroll =
+    finance.indiaPayroll || 0;
+
+  finance.usPayroll =
+    finance.usPayroll || 0;
+
+  finance.avgCTC =
+    finance.avgCTC || 0;
+
+  document.getElementById(
+    "financeKPIs"
+  ).innerHTML = `
+
+    <div class="kpi-card">
+
+      <div class="kpi-value">
+        ₹${(
+          finance.totalPayrollINR /
+          10000000
+        ).toFixed(2)}
+      </div>
+
+      <div class="kpi-label">
+        Total Payroll (Cr)
+      </div>
+
+    </div>
+
+    <div class="kpi-card">
+
+      <div class="kpi-value">
+        ₹${(
+          finance.indiaPayroll /
+          10000000
+        ).toFixed(2)}
+      </div>
+
+      <div class="kpi-label">
+        India Payroll
+      </div>
+
+    </div>
+
+    <div class="kpi-card">
+
+      <div class="kpi-value">
+        $${finance.usPayroll.toFixed(0)}
+      </div>
+
+      <div class="kpi-label">
+        US Payroll
+      </div>
+
+    </div>
+
+    <div class="kpi-card">
+
+      <div class="kpi-value">
+        ₹${(
+          finance.avgCTC /
+          100000
+        ).toFixed(1)}
+
+      </div>
+
+      <div class="kpi-label">
+        Avg CTC
+      </div>
+
+    </div>
+
+  `;
+
+}
+function renderProductivity(
+  productivityData = [],
+  topPerformers = [],
+  lowestPerformers = []
+) {
+
+  document.getElementById("topPerformers").innerHTML =
+    topPerformers.map((e, i) => `
+      <div class="alert-item">
+        <div style="flex:1">
+          <div class="alert-name">
+            ${i + 1}. ${e.employeeName}
+          </div>
+
+
+
+          <div class="alert-meta">
+            ${e.department}
+          </div>
+        </div>
+
+        <div class="days-ok">
+          ${e.overallAvg.toFixed(2)}
+        </div>
+      </div>
+    `).join("");
+
+  document.getElementById("lowestPerformers").innerHTML =
+    lowestPerformers.map((e, i) => `
+      <div class="alert-item">
+        <div style="flex:1">
+          <div class="alert-name">
+            ${i + 1}. ${e.employeeName}
+          </div>
+
+          <div class="alert-meta">
+            ${e.department}
+          </div>
+        </div>
+
+        <div class="days-urgent">
+          ${e.overallAvg.toFixed(2)}
+        </div>
+      </div>
+    `).join("");
+
+  renderProductivityTable(
+  productivityData
+);
+}
+function getTrendClass(trend) {
+
+  switch(trend) {
+
+    case "Improving":
+      return "badge-green";
+
+    case "Declining":
+      return "badge-red";
+
+    default:
+      return "badge-blue";
+  }
+}
+function showTab(tab) {
+
+  document.querySelectorAll('.tab-content')
+    .forEach(t => t.classList.remove('active'));
+
+  document.querySelectorAll('.nav-tabs button')
+    .forEach(btn => btn.classList.remove('active'));
+
+  const activeButton =
+    document.querySelector(`[onclick="showTab('${tab}')"]`);
+
+  if (activeButton)
+    activeButton.classList.add('active');
+
+  const activeTab =
+    document.getElementById(tab + 'Tab');
+
+  if (activeTab)
+    activeTab.classList.add('active');
+}
 function loadData() {
   document.getElementById('loadingState').style.display = 'flex';
-  document.getElementById('dashboard').style.display    = 'none';
-  document.getElementById('errorState').style.display   = 'none';
+  document.getElementById('errorState').style.display = 'none';
   document.getElementById('refreshBtn').disabled = true;
 
   google.script.run
@@ -482,7 +1493,77 @@ function loadData() {
     .withFailureHandler(onError)
     .getWebAppData();
 }
+function getPriorityClass(priority) {
+  if (!priority) return "";
 
+  switch (priority.toLowerCase()) {
+    case "high":
+      return "high";
+
+    case "medium":
+      return "medium";
+
+    case "low":
+      return "low";
+
+    default:
+      return "";
+  }
+}
+function renderAlertEngineTab(alerts=[]) {
+
+  const container =
+    document.getElementById("alertEngineFull");
+
+  if (!container) return;
+
+  container.innerHTML = alerts.map(a => `
+
+    <div class="alert-engine-card ${getPriorityClass(a.priority)}">
+
+      <div class="alert-engine-priority ${getPriorityClass(a.priority)}">
+        ${(a.priority || 'LOW').toUpperCase()}
+              </div>
+
+      <div class="alert-engine-category">
+        ${a.category}
+      </div>
+
+      <div class="alert-engine-message">
+        ${a.message}
+      </div>
+
+    </div>
+
+  `).join('');
+}
+function renderAlertEngine(alerts=[]) {
+
+  const container =
+    document.getElementById("alertEngineContainer");
+
+  if (!container) return;
+
+  container.innerHTML = alerts.map(a => `
+
+    <div class="alert-engine-card ${getPriorityClass(a.priority)}">
+
+      <div class="alert-engine-priority ${getPriorityClass(a.priority)}">
+       ${(a.priority || 'LOW').toUpperCase()}
+      </div>
+
+      <div class="alert-engine-category">
+        ${a.category}
+      </div>
+
+      <div class="alert-engine-message">
+        ${a.message}
+      </div>
+
+    </div>
+
+  `).join('');
+}
 function onDataLoaded(data) {
   document.getElementById('refreshBtn').disabled = false;
   document.getElementById('loadingState').style.display = 'none';
@@ -493,15 +1574,42 @@ function onDataLoaded(data) {
   document.getElementById('generatedAt').textContent = 'Last updated: ' + data.generatedAt;
 
   renderKPIs(data.kpis);
-  renderAlerts(data.lwdAlerts, data.probationAlerts);
-  renderDepartments(data.departments);
-  renderAttrition(data.attrition);
-  renderRiskRegister(data.riskRegister);
-  renderOrgChart(data.orgData);
-  renderFilters(data.filters);
-  renderDrillDown();
+  renderAlerts(
+  data.lwdAlerts || [],
+  data.probationAlerts || []
+);
+  renderAlertEngine(data.alertEngine);
+  renderFinance(
+  data.financeData
+);
 
-  document.getElementById('dashboard').style.display = 'block';
+renderFinanceDetails(
+  data.projectFinance || [],
+  data.departmentFinance || []
+);
+loadFinanceFilters();
+renderFinanceDrilldownFiltered();
+  renderProductivity(
+  data.productivityData || [],
+  data.topPerformers || [],
+  data.lowestPerformers || []
+);
+loadProductivityFilters();
+  renderAlertEngineTab(data.alertEngine);
+ renderDepartments(data.departments || []);
+renderAttrition(data.attrition || []);
+renderRiskRegister(data.riskRegister || []);
+renderOrgChart(data.orgData || { hierarchy:{}, roots:[] });
+renderFilters(data.filters || {
+  regions:[],
+  departments:[],
+  managers:[],
+  statuses:[]
+});
+
+renderDrillDown();
+
+showTab('dashboard');
 }
 
 function onError(err) {
@@ -512,12 +1620,80 @@ function onError(err) {
 
 function showError(msg) {
   const el = document.getElementById('errorState');
-  el.textContent = '⚠️ ' + msg;
+  el.textContent = msg;
   el.style.display = 'block';
+}
+function showProjectEmployees(project){
+
+  const p =
+    _data.projectFinance.find(
+      x => x.project === project
+    );
+
+  if(!p) return;
+
+  document.getElementById(
+    "financeDrilldown"
+  ).innerHTML = buildEmployeeTable(
+    p.employees
+  );
+}
+
+function showDeptEmployees(dept){
+
+  const d =
+    _data.departmentFinance.find(
+      x => x.department === dept
+    );
+
+  if(!d) return;
+
+  document.getElementById(
+    "financeDrilldown"
+  ).innerHTML = buildEmployeeTable(
+    d.employees
+  );
+}
+
+function buildEmployeeTable(rows){
+
+  return `
+    <table class="data-table">
+
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>CTC</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+      ${rows.map(r=>`
+
+        <tr>
+
+          <td>${r.employeeId}</td>
+
+          <td>${r.employeeName}</td>
+
+          <td>
+            ₹${r.ctc.toLocaleString()}
+          </td>
+
+        </tr>
+
+      `).join("")}
+
+      </tbody>
+
+    </table>
+  `;
 }
 
 // ── KPIs ──────────────────────────────────────────────────
-function renderKPIs(kpis) {
+function renderKPIs(kpis={}) {
   const cards = [
     { label: 'Total Employees',    value: kpis.total,      cls: '' },
     { label: 'India',              value: kpis.india,      cls: 'success' },
@@ -531,7 +1707,7 @@ function renderKPIs(kpis) {
     { label: 'Probation Alerts',   value: kpis.probAlerts, cls: kpis.probAlerts> 0 ? 'alert'  : '' }
   ];
   document.getElementById('kpiGrid').innerHTML = cards.map(c => `
-    <div class="kpi-card ${c.cls}">
+    <div class="kpi-card ${c.cls}" title="${c.label}: ${c.value}">
       <div class="kpi-value">${c.value}</div>
       <div class="kpi-label">${c.label}</div>
     </div>`).join('');
@@ -574,20 +1750,34 @@ function daysClass(d) {
   return 'days-ok';
 }
 
-// ── DEPARTMENTS ───────────────────────────────────────────
 function renderDepartments(departments) {
-  const max = departments[0]?.count || 1;
-  document.getElementById('deptBreakdown').innerHTML = departments.map(d => `
-    <div class="dept-bar">
-      <div class="dept-bar-header"><span>${d.dept}</span><span>${d.count}</span></div>
-      <div class="dept-bar-track">
-        <div class="dept-bar-fill" style="width:${(d.count/max*100).toFixed(1)}%"></div>
+
+  if (!departments || departments.length === 0) {
+    document.getElementById('deptBreakdown').innerHTML =
+      '<div class="no-data">No department data available</div>';
+    return;
+  }
+
+  const max = Math.max(...departments.map(d => d.count), 1);
+
+  document.getElementById('deptBreakdown').innerHTML =
+    departments.map(d => `
+      <div class="dept-bar">
+        <div class="dept-bar-header">
+          <span>${d.dept}</span>
+          <span>${d.count}</span>
+        </div>
+        <div class="dept-bar-track">
+          <div class="dept-bar-fill"
+               style="width:${(d.count / max * 100).toFixed(1)}%">
+          </div>
+        </div>
       </div>
-    </div>`).join('');
+    `).join('');
 }
 
 // ── ATTRITION ─────────────────────────────────────────────
-function renderAttrition(quarters) {
+function renderAttrition(quarters=[]) {
   document.getElementById('attrition').innerHTML = `
     <div class="attrition-grid">
       ${quarters.map(q => `
@@ -600,7 +1790,7 @@ function renderAttrition(quarters) {
 }
 
 // ── RISK REGISTER ─────────────────────────────────────────
-function renderRiskRegister(risks) {
+function renderRiskRegister(risks=[]) {
   document.getElementById('riskBody').innerHTML = risks.length === 0
     ? '<tr><td colspan="5" class="no-data">No risk records</td></tr>'
     : risks.map(r => `
@@ -634,7 +1824,6 @@ function renderOrgChart(orgData) {
                      : depth === 1 ? 'org-box-mid'
                      : 'org-box-leaf';
 
-    // The manager box
     const managerHtml = `
       <div class="org-manager-row">
         <div class="org-box ${colorClass}" title="${name}">
@@ -645,8 +1834,7 @@ function renderOrgChart(orgData) {
 
     if (!hasReports) return `<div class="org-root-block">${managerHtml}</div>`;
 
-    // Calculate h-line width based on number of children
-    const childWidth  = 150 + 12; // max-width + gap
+    const childWidth  = 150 + 12;
     const totalWidth  = Math.max(reports.length * childWidth - 12, 150);
     const hLineWidth  = reports.length === 1 ? 2 : totalWidth - childWidth + 2;
 
@@ -675,7 +1863,20 @@ function renderOrgChart(orgData) {
 }
 
 // ── DRILL-DOWN ────────────────────────────────────────────
-function renderFilters(filters) {
+function renderFilters(filters = {}) {
+
+  const regions =
+    filters.regions || [];
+
+  const departments =
+    filters.departments || [];
+
+  const managers =
+    filters.managers || [];
+
+  const statuses =
+    filters.statuses || [];
+  
   document.getElementById('filterRow').innerHTML = `
     <div class="filter-group">
       <label>Region</label>
@@ -714,7 +1915,7 @@ function updateFilter(key, value) {
 
 function renderDrillDown() {
   if (!_data) return;
-  let rows = _data.employeeList;
+  let rows = _data.employeeList || [];
   if (_filters.region  !== 'All') rows = rows.filter(e => e.region  === _filters.region);
   if (_filters.dept    !== 'All') rows = rows.filter(e => e.dept    === _filters.dept);
   if (_filters.manager !== 'All') rows = rows.filter(e => e.manager === _filters.manager);
@@ -722,7 +1923,7 @@ function renderDrillDown() {
 
   document.getElementById('ddCount').textContent = `${rows.length} employee(s) found`;
   document.getElementById('ddBody').innerHTML = rows.length === 0
-    ? '<tr><td colspan="8" class="no-data">No employees match the selected filters</td></tr>'
+    ? '<tr><td colspan="11" class="no-data">No employees match the selected filters</td></tr>'
     : rows.map(e => `
         <tr>
           <td style="font-family:monospace;font-size:12px">${e.id}</td>
@@ -731,8 +1932,40 @@ function renderDrillDown() {
           <td><span class="badge ${e.region==='India'?'badge-blue':'badge-purple'}">${e.region}</span></td>
           <td>${e.manager}</td>
           <td>${statusEmpBadge(e.status)}</td>
-          <td style="font-size:12px;color:#6b7280">${e.designation}</td>
-          <td style="font-size:12px;color:#6b7280">${e.doj}</td>
+         <td style="font-size:12px;color:#6b7280">${e.designation}</td>
+<td>${e.currentProject || '-'}</td>
+<td>${e.allocation || '-'}</td>
+<td style="font-size:12px;color:#6b7280">${e.doj}</td>
+          <td>
+  <div class="row-actions">
+
+    <button class="row-action-btn"
+      onclick="openEditFieldModal('${e.id}','Designation','${escapeAttr(e.designation)}')">
+      Designation
+    </button>
+
+    <button class="row-action-btn"
+      onclick="openEditFieldModal('${e.id}','Department','${escapeAttr(e.dept)}')">
+      Department
+    </button>
+
+    <button class="row-action-btn"
+      onclick="openEditFieldModal('${e.id}','Reporting Manager','${escapeAttr(e.manager)}')">
+      Manager
+    </button>
+
+    <button class="row-action-btn"
+      onclick="openEditFieldModal('${e.id}','Employment Status','${escapeAttr(e.status)}')">
+      Status
+    </button>
+
+    <button class="row-action-btn danger"
+      onclick="openRemoveEmployeeModal('${e.id}','${escapeAttr(e.name)}')">
+      Offboard
+    </button>
+
+  </div>
+</td>
         </tr>`).join('');
 }
 
@@ -744,61 +1977,252 @@ function statusEmpBadge(status) {
   };
   return `<span class="badge ${map[status] || 'badge-gray'}">${status}</span>`;
 }
+
+function escapeAttr(str) {
+  return (str || '').toString().replace(/'/g, "\\'");
+}
+
+// ============================================================
+// MODAL HELPERS
+// ============================================================
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  clearModalMessages(id);
+}
+function clearModalMessages(modalId) {
+  const modal = document.getElementById(modalId);
+  modal.querySelectorAll('.modal-error, .modal-success').forEach(el => {
+    el.style.display = 'none';
+    el.textContent = '';
+  });
+}
+function showModalError(prefix, msg) {
+  const el = document.getElementById(prefix + 'Error');
+  el.textContent = msg;
+  el.style.display = 'block';
+  const succ = document.getElementById(prefix + 'Success');
+  if (succ) succ.style.display = 'none';
+}
+function showModalSuccess(prefix, msg) {
+  const el = document.getElementById(prefix + 'Success');
+  el.textContent = msg;
+  el.style.display = 'block';
+  const err = document.getElementById(prefix + 'Error');
+  if (err) err.style.display = 'none';
+}
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' toast-' + type : '');
+  setTimeout(() => { t.className = 'toast'; }, 3500);
+}
+
+// ============================================================
+// ADD EMPLOYEE
+// ============================================================
+function openAddEmployeeModal() {
+  ['f_employeeId','f_employeeName','f_department','f_designation','f_reportingManager','f_skillset','f_doj','f_lwd']
+    .forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f_employmentStatus').value = 'Confirmed';
+  document.getElementById('f_lwdGroup').style.display = 'none';
+  openModal('addEmpModal');
+}
+
+function toggleLwdField() {
+  const status = document.getElementById('f_employmentStatus').value;
+  document.getElementById('f_lwdGroup').style.display = status === 'Intern' ? 'block' : 'none';
+}
+
+function submitAddEmployee() {
+  const emp = {
+    employeeId:       document.getElementById('f_employeeId').value.trim(),
+    employeeName:     document.getElementById('f_employeeName').value.trim(),
+    department:       document.getElementById('f_department').value.trim(),
+    designation:      document.getElementById('f_designation').value.trim(),
+    reportingManager: document.getElementById('f_reportingManager').value.trim(),
+    skillset:         document.getElementById('f_skillset').value.trim(),
+    doj:              document.getElementById('f_doj').value,
+    employmentStatus: document.getElementById('f_employmentStatus').value,
+    lwd:              document.getElementById('f_lwd').value
+  };
+
+  if (!emp.employeeId || !/^(IN|US)/i.test(emp.employeeId)) {
+    showModalError('addEmp', 'Employee ID is required and must start with IN or US.');
+    return;
+  }
+  if (!emp.employeeName || !emp.department || !emp.designation || !emp.reportingManager) {
+    showModalError('addEmp', 'Please fill in all required fields.');
+    return;
+  }
+  if (emp.employmentStatus === 'Intern' && !emp.lwd) {
+    showModalError('addEmp', 'Last Working Day is required for interns.');
+    return;
+  }
+
+  const btn = document.getElementById('addEmpSaveBtn');
+  btn.disabled = true;
+  btn.textContent = 'Adding...';
+
+  google.script.run
+    .withSuccessHandler(res => {
+      btn.disabled = false;
+      btn.textContent = 'Add Employee';
+      if (res.success) {
+        showModalSuccess('addEmp', res.message);
+        showToast(res.message, 'success');
+        setTimeout(() => { closeModal('addEmpModal'); loadData(); }, 1200);
+      } else {
+        showModalError('addEmp', res.message);
+      }
+    })
+    .withFailureHandler(err => {
+      btn.disabled = false;
+      btn.textContent = 'Add Employee';
+      showModalError('addEmp', 'Server error: ' + (err.message || err));
+    })
+    .addEmployee(emp);
+}
+
+// ============================================================
+// EDIT FIELD
+// ============================================================
+let _editTargetId = null;
+let _editTargetField = null;
+
+function openEditFieldModal(employeeId, fieldName, currentValue) {
+  _editTargetId = employeeId;
+  _editTargetField = fieldName;
+  document.getElementById('editFieldTitle').textContent = `Edit ${fieldName} — ${employeeId}`;
+  document.getElementById('editFieldLabel').textContent = fieldName;
+  document.getElementById('f_editValue').value = currentValue || '';
+  openModal('editFieldModal');
+}
+
+function submitEditField() {
+  const newValue = document.getElementById('f_editValue').value.trim();
+  if (!newValue) {
+    showModalError('editField', 'Value cannot be blank.');
+    return;
+  }
+
+  const btn = document.getElementById('editFieldSaveBtn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  google.script.run
+    .withSuccessHandler(res => {
+      btn.disabled = false;
+      btn.textContent = 'Save';
+      if (res.success) {
+        showModalSuccess('editField', res.message);
+        showToast(res.message, 'success');
+        setTimeout(() => { closeModal('editFieldModal'); loadData(); }, 1000);
+      } else {
+        showModalError('editField', res.message);
+      }
+    })
+    .withFailureHandler(err => {
+      btn.disabled = false;
+      btn.textContent = 'Save';
+      showModalError('editField', 'Server error: ' + (err.message || err));
+    })
+    .updateEmployeeField(_editTargetId, _editTargetField, newValue);
+}
+
+// ============================================================
+// REMOVE / OFFBOARD EMPLOYEE
+// ============================================================
+let _removeTargetId = null;
+
+function openRemoveEmployeeModal(employeeId, employeeName) {
+  _removeTargetId = employeeId;
+  document.getElementById('removeEmpName').textContent = `${employeeName} (${employeeId})`;
+  document.getElementById('f_exitLwd').value = new Date().toISOString().split('T')[0];
+  openModal('removeEmpModal');
+}
+
+function submitRemoveEmployee() {
+  const exitInfo = {
+    exitReason:          document.getElementById('f_exitReason').value,
+    lastWorkingDay:       document.getElementById('f_exitLwd').value,
+    noticePeriodServed:   document.getElementById('f_noticePeriod').value,
+    rehireEligible:       document.getElementById('f_rehireEligible').value
+  };
+
+  const btn = document.getElementById('removeEmpSaveBtn');
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+
+  google.script.run
+    .withSuccessHandler(res => {
+      btn.disabled = false;
+      btn.textContent = 'Offboard';
+      if (res.success) {
+        showModalSuccess('removeEmp', res.message);
+        showToast(res.message, 'success');
+        setTimeout(() => { closeModal('removeEmpModal'); loadData(); }, 1200);
+      } else {
+        showModalError('removeEmp', res.message);
+      }
+    })
+    .withFailureHandler(err => {
+      btn.disabled = false;
+      btn.textContent = 'Offboard';
+      showModalError('removeEmp', 'Server error: ' + (err.message || err));
+    })
+    .removeEmployee(_removeTargetId, exitInfo);
+}
+
 let refreshInProgress = false;
 
 function startAutoRefresh() {
-
   setInterval(() => {
-
     if (refreshInProgress) return;
-
     refreshInProgress = true;
 
     google.script.run
       .withSuccessHandler(data => {
-
         refreshInProgress = false;
-
         if (!data.success) return;
-
         _data = data;
-
-        document.getElementById('generatedAt').textContent =
-          'Last updated: ' + data.generatedAt;
-
+        document.getElementById('generatedAt').textContent = 'Last updated: ' + data.generatedAt;
         renderKPIs(data.kpis);
+       renderFinance(data.financeData);
+
+renderFinanceDetails(
+  data.projectFinance || [],
+  data.departmentFinance || []
+);
         renderAlerts(
-          data.lwdAlerts,
-          data.probationAlerts
-        );
-        renderDepartments(
-          data.departments
-        );
-        renderAttrition(
-          data.attrition
-        );
-        renderRiskRegister(
-          data.riskRegister
-        );
-        renderOrgChart(
-          data.orgData
-        );
-
-        // Don't rebuild filters every 5 sec
+  data.lwdAlerts || [],
+  data.probationAlerts || []
+);
+loadProductivityFilters();
+loadFinanceFilters();
+renderFinanceDrilldownFiltered();
+        renderAlertEngine(data.alertEngine);
+        renderAlertEngineTab(data.alertEngine);
+       renderDepartments(data.departments || []);
+renderAttrition(data.attrition || []);
+renderRiskRegister(data.riskRegister || []);
+renderOrgChart(data.orgData || {
+  hierarchy:{},
+  roots:[]
+});
         renderDrillDown();
-
       })
       .withFailureHandler(err => {
-
         refreshInProgress = false;
         console.error(err);
-
       })
       .getWebAppData();
-
-  }, 1500);
-
+  }, 10000);
 }
+document.addEventListener('DOMContentLoaded', () => {
+  loadData();
+  startAutoRefresh();
+});
 </script>
 </body>
 </html>

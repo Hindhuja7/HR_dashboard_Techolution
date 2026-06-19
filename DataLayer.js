@@ -12,6 +12,7 @@
 let _cache = {};
 
 function clearCache() {
+
   _cache = {};
 }
 
@@ -61,14 +62,18 @@ const COLUMN_POSITION_FALLBACK = {
     'Employment Status',     // col 10: Employment Status
     'Last Working Day (Interns Only)' // col 11: Last Working Day (Interns Only)
   ],
-
-  'Risk Report': [
-    'Employee Name',
-    'Risk Category',
-    'Risk Level',
-    'Status',
-    'Mitigation Action'
-  ],
+'Risk Report': [
+  'Employee ID',
+  'Employee Name',
+  'Department',
+  'Region',
+  'Risk Category',
+  'Risk Level',
+  'Identified Date',
+  'Mitigation Action',
+  'Status',
+  'HR Notes'
+],
 
   'Finance': [
     'Employee ID',
@@ -137,11 +142,13 @@ function normalizeHeader(raw) {
     "Office": "Region",
 
     // Employment Status
-    "Employment Status": "Employment Status",
-    "Status": "Employment Status",
-    "Emp Status": "Employment Status",
-    "Employment Type": "Employment Status",
-    "Employee Status": "Employment Status",
+"Employment Status": "Employment Status",
+"Emp Status": "Employment Status",
+"Employment Type": "Employment Status",
+"Employee Status": "Employment Status",
+
+// Generic Status
+"Status": "Status",
 
     // Reporting Manager
     "Reporting Manager": "Reporting Manager",
@@ -376,27 +383,74 @@ function getAllEmployees() {
   return [...india, ...us];
 }
 
-// ── TEST ──────────────────────────────────────────────────────────────────────
 function testDataLayer() {
   clearCache();
   const all = cachedEmployees();
   console.log(`Total employees: ${all.length}`);
+}
+function getRMData() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet()
+    .getSheetByName('RM Data');
 
-  const india = all.filter(e => getField(e, 'Region') === 'India');
-  const us = all.filter(e => getField(e, 'Region') === 'US');
-  console.log(`India: ${india.length}, US: ${us.length}`);
+  if (!sheet) {
+    throw new Error('RM Data sheet not found');
+  }
 
-  // Verify US Employment Status reads correctly
-  const usStatuses = [...new Set(us.map(e => getField(e, 'Employment Status')))];
-  console.log(`US Employment Status values: ${JSON.stringify(usStatuses)}`);
+  const values = sheet.getDataRange().getValues();
 
-  // Verify US Allocation % reads correctly
-  const usAlloc = us[0] ? getField(us[0], 'Allocation %') : 'N/A';
-  console.log(`First US employee Allocation %: ${usAlloc}`);
+  if (values.length < 3) return [];
 
+  const header1 = values[0];
+  const header2 = values[1];
+
+  const headers = [];
+  let currentMonth = '';
+
+  for (let i = 0; i < header1.length; i++) {
+
+    if (header1[i]) {
+      currentMonth = header1[i];
+    }
+
+    if (i < 4) {
+      headers.push(header1[i]);
+    } else {
+      headers.push(`${currentMonth} ${header2[i]}`);
+    }
+  }
+
+  const rows = [];
+
+  for (let r = 2; r < values.length; r++) {
+    const row = values[r];
+
+    const obj = {};
+
+    headers.forEach((h, idx) => {
+      obj[h] = row[idx];
+    });
+
+    obj._rowNumber = r + 1;
+
+    rows.push(obj);
+  }
+
+  return rows;
+}
+function testRiskData() {
   const risk = cachedSheetData('Risk Report');
-  console.log(`Risk Report rows: ${risk.length}`);
-
-  const offboarded = cachedSheetData('Offboarded Resources');
-  console.log(`Offboarded rows: ${offboarded.length}`);
+  Logger.log(JSON.stringify(risk[0], null, 2));
+}
+function testRiskHeaders() {
+  const risk = cachedSheetData('Risk Report');
+  Logger.log(JSON.stringify(risk[0], null, 2));
+}
+function testRiskStatus() {
+  clearCache();
+  const risk = cachedSheetData('Risk Report');
+  Logger.log(JSON.stringify(risk[0], null, 2));
+}
+function testRMData() {
+  const rm = getRMData();
+  Logger.log(JSON.stringify(rm[0], null, 2));
 }
